@@ -1,0 +1,9 @@
+{
+   "type": "minecraft:blasting",
+   "ingredient": {
+      "item": "endlessexpansion:uranium_ore"
+   },
+   "result": "endlessexpansion:uranium_ingot",
+   "experience": 4,
+   "cookingtime": 100
+}

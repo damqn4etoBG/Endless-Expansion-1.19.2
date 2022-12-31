@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "endlessexpansion:raw_uranium"
+  },
+  "result": "endlessexpansion:uranium_ingot",
+  "experience": 4,
+  "cookingtime": 250
+}

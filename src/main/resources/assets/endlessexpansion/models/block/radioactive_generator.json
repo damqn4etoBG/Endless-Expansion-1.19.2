@@ -1,0 +1,8 @@
+{
+	"parent":  "minecraft:block/cube_column",
+	"textures": 
+	{
+		"end": "endlessexpansion:block/radioactive_generator_end",
+		"side": "endlessexpansion:block/radioactive_generator_side"
+	}
+}

@@ -1,0 +1,13 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+      {
+        "item": "endlessexpansion:uranium_block"
+      }
+    ],
+    "result": {
+      "item": "endlessexpansion:uranium_ingot",
+      "count": 9
+    }
+  }
+  

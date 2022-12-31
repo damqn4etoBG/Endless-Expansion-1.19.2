@@ -1,0 +1,41 @@
+{
+  "parent": "minecraft:husbandry/plant_seed",
+  "display": {
+    "icon": {
+      "item": "endlessexpansion:uranium_ingot",
+      "nbt": "{Damage:0}"
+    },
+    "title": {
+      "text": "Radiation!",
+      "color": "dark_purple"
+    },
+    "description": {
+      "text": "Obtain an Uranium Ingot",
+      "color": "green"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "rewards": {
+    "experience": 250
+  },
+  "criteria": {
+    "netherite_hoe": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "endlessexpansion:uranium_ingot"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "netherite_hoe"
+    ]
+  ]
+}

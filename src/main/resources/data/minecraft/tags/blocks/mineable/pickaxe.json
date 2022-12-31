@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "endlessexpansion:uranium_block",
+    "endlessexpansion:uranium_ore",
+    "endlessexpansion:deepslate_uranium_ore",
+    "endlessexpansion:radioactive_generator"
+  ]
+}
