@@ -1,6 +1,7 @@
 package net.damqn4etobg.endlessexpansion.block;
 
 import net.damqn4etobg.endlessexpansion.EndlessExpansion;
+import net.damqn4etobg.endlessexpansion.block.custom.PlutoniumBlock;
 import net.damqn4etobg.endlessexpansion.block.custom.RadioactiveGeneratorBlock;
 import net.damqn4etobg.endlessexpansion.block.custom.UraniumBlock;
 import net.damqn4etobg.endlessexpansion.fluid.ModFluids;
@@ -45,6 +46,15 @@ public class ModBlocks {
             () -> new DropExperienceBlock(BlockBehaviour.Properties.of(Material.STONE)
                     .strength(5f).sound(SoundType.DEEPSLATE).requiresCorrectToolForDrops(),
                     UniformInt.of(3, 7)), ModCreativeModeTab.PHYSICS_TAB);
+
+    public static final RegistryObject<Block> DEEPSLATE_PLUTONIUM_ORE = registerBlock("deepslate_plutonium_ore",
+            () -> new DropExperienceBlock(BlockBehaviour.Properties.of(Material.STONE)
+                    .strength(5f).sound(SoundType.DEEPSLATE).requiresCorrectToolForDrops(),
+                    UniformInt.of(3, 7)), ModCreativeModeTab.PHYSICS_TAB);
+
+    public static final RegistryObject<Block> PLUTONIUM_BLOCK = registerBlock("plutonium_block",
+            () -> new PlutoniumBlock(BlockBehaviour.Properties.of(Material.METAL)
+                    .strength(4f).sound(SoundType.METAL).requiresCorrectToolForDrops()), ModCreativeModeTab.PHYSICS_TAB);
 
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block, CreativeModeTab tab) {

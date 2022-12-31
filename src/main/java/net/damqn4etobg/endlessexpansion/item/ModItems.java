@@ -20,6 +20,12 @@ public class ModItems {
     public static final RegistryObject<Item> RAW_URANIUM = ITEMS.register("raw_uranium",
             () -> new Item(new Item.Properties().tab(ModCreativeModeTab.PHYSICS_TAB)));
 
+    public static final RegistryObject<Item> PLUTONIUM_INGOT = ITEMS.register("plutonium_ingot",
+            () -> new Item(new Item.Properties().tab(ModCreativeModeTab.PHYSICS_TAB)));
+
+    public static final RegistryObject<Item> RAW_PLUTONIUM = ITEMS.register("raw_plutonium",
+            () -> new Item(new Item.Properties().tab(ModCreativeModeTab.PHYSICS_TAB)));
+
     public static final RegistryObject<Item> NUCLEAR_WASTE_BUCKET = ITEMS.register("nuclear_waste_bucket",
             () -> new BucketItem(ModFluids.SOURCE_NUCLEAR_WASTE,
                     new Item.Properties().tab(ModCreativeModeTab.PHYSICS_TAB).craftRemainder(Items.BUCKET).stacksTo(1)));

@@ -1,0 +1,6 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "endlessexpansion:block/deepslate_plutonium_ore"
+  }
+}

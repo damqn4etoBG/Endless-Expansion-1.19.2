@@ -20,6 +20,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.pattern.TextRenderer;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -170,6 +171,8 @@ public class FluidTankRenderer {
         Fluid fluidType = fluidStack.getFluid();
         try {
             if (fluidType.isSame(Fluids.EMPTY)) {
+                MutableComponent amountString = Component.translatable("endlessexpansion.tooltip.liquid.empty");
+                tooltip.add(amountString.withStyle(ChatFormatting.WHITE));
                 return tooltip;
             }
 

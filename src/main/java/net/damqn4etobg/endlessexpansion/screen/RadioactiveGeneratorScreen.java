@@ -21,6 +21,7 @@ public class RadioactiveGeneratorScreen extends AbstractContainerScreen<Radioact
             new ResourceLocation(EndlessExpansion.MOD_ID,"textures/gui/radioactive_generator_gui.png");
     private EnergyInfoArea energyInfoArea;
     private FluidTankRenderer renderer;
+    private FluidTankRenderer wasteRenderer;
     private TemperatureInfoArea temperatureInfoArea;
 
     public RadioactiveGeneratorScreen(RadioactiveGeneratorMenu menu, Inventory inventory, Component component) {
@@ -32,11 +33,16 @@ public class RadioactiveGeneratorScreen extends AbstractContainerScreen<Radioact
         super.init();
         assignEnergyInfoArea();
         assignFluidRenderer();
+        assignFluidWasteRenderer();
         assignTemperatureInfoArea();
     }
 
     private void assignFluidRenderer() {
-        renderer = new FluidTankRenderer(128000, true, 4, 54);
+        renderer = new FluidTankRenderer(128000, true, 16, 54);
+    }
+
+    private void assignFluidWasteRenderer() {
+        wasteRenderer = new FluidTankRenderer(128000, true, 4, 54);
     }
 
     private void assignEnergyInfoArea() {
@@ -60,12 +66,20 @@ public class RadioactiveGeneratorScreen extends AbstractContainerScreen<Radioact
 
         renderEnergyAreaTooltips(pPoseStack, pMouseX, pMouseY, x, y);
         renderFluidAreaTooltips(pPoseStack, pMouseX, pMouseY, x, y);
+        renderFluidWasteAreaTooltips(pPoseStack, pMouseX, pMouseY, x, y);
         renderTemperatureAreaTooltips(pPoseStack, pMouseX, pMouseY, x, y);
     }
 
     private void renderFluidAreaTooltips(PoseStack pPoseStack, int pMouseX, int pMouseY, int x, int y) {
-        if(isMouseAboveArea(pMouseX, pMouseY, x, y, 30, 16, 4, 54)) {
+        if(isMouseAboveArea(pMouseX, pMouseY, x, y, 135, 16, 16, 54)) {
             renderTooltip(pPoseStack, renderer.getTooltip(menu.getFluidStack(), TooltipFlag.Default.NORMAL),
+                    Optional.empty(), pMouseX - x, pMouseY - y);
+        }
+    }
+
+    private void renderFluidWasteAreaTooltips(PoseStack pPoseStack, int pMouseX, int pMouseY, int x, int y) {
+        if(isMouseAboveArea(pMouseX, pMouseY, x, y, 30, 16, 4, 54)) {
+            renderTooltip(pPoseStack, wasteRenderer.getTooltip(menu.getFluidStackWaste(), TooltipFlag.Default.NORMAL),
                     Optional.empty(), pMouseX - x, pMouseY - y);
         }
     }
@@ -96,7 +110,8 @@ public class RadioactiveGeneratorScreen extends AbstractContainerScreen<Radioact
 
         renderProgressArrow(pPoseStack, x, y);
         energyInfoArea.draw(pPoseStack);
-        renderer.render(pPoseStack, x + 29, y + 16, menu.getFluidStack());
+        renderer.render(pPoseStack, x + 134, y + 16, menu.getFluidStack());
+        wasteRenderer.render(pPoseStack, x + 29, y + 16, menu.getFluidStackWaste());
         temperatureInfoArea.draw(pPoseStack);
     }
 

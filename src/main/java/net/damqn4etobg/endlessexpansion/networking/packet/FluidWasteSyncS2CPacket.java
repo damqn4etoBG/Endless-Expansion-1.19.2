@@ -10,16 +10,16 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class FluidSyncS2CPacket {
+public class FluidWasteSyncS2CPacket {
     private final FluidStack fluidStack;
     private final BlockPos pos;
 
-    public FluidSyncS2CPacket(FluidStack fluidStack, BlockPos pos) {
+    public FluidWasteSyncS2CPacket(FluidStack fluidStack, BlockPos pos) {
         this.fluidStack = fluidStack;
         this.pos = pos;
     }
 
-    public FluidSyncS2CPacket(FriendlyByteBuf buf) {
+    public FluidWasteSyncS2CPacket(FriendlyByteBuf buf) {
         this.fluidStack = buf.readFluidStack();
         this.pos = buf.readBlockPos();
     }
@@ -33,11 +33,11 @@ public class FluidSyncS2CPacket {
         NetworkEvent.Context context = supplier.get();
         context.enqueueWork(() -> {
             if(Minecraft.getInstance().level.getBlockEntity(pos) instanceof RadioactiveGeneratorBlockEntity blockEntity) {
-                blockEntity.setFluid(this.fluidStack);
+                blockEntity.setFluidWaste(this.fluidStack);
 
                 if(Minecraft.getInstance().player.containerMenu instanceof RadioactiveGeneratorMenu menu &&
                         menu.getBlockEntity().getBlockPos().equals(pos)) {
-                    menu.setFluid(this.fluidStack);
+                    menu.setFluidWaste(this.fluidStack);
                 }
             }
         });

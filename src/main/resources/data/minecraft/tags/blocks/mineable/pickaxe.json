@@ -4,6 +4,8 @@
     "endlessexpansion:uranium_block",
     "endlessexpansion:uranium_ore",
     "endlessexpansion:deepslate_uranium_ore",
-    "endlessexpansion:radioactive_generator"
+    "endlessexpansion:radioactive_generator",
+    "endlessexpansion:plutonium_block",
+    "endlessexpansion:deepslate_plutonium_ore"
   ]
 }

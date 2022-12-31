@@ -18,6 +18,7 @@ public class RadioactiveGeneratorMenu extends AbstractContainerMenu {
     private final Level level;
     private final ContainerData data;
     private FluidStack fluidStack;
+    private FluidStack fluidStackWaste;
 
     public RadioactiveGeneratorMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
         this(id, inv ,inv.player.level.getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(2));
@@ -30,6 +31,7 @@ public class RadioactiveGeneratorMenu extends AbstractContainerMenu {
         this.level = inv.player.level;
         this.data = data;
         this.fluidStack = blockEntity.getFluidStack();
+        this.fluidStackWaste = blockEntity.getFluidStackWaste();
 
         addPlayerInventory(inv);
         addPlayerHotbar(inv);
@@ -50,8 +52,16 @@ public class RadioactiveGeneratorMenu extends AbstractContainerMenu {
         this.fluidStack = fluidStack;
     }
 
+    public void setFluidWaste(FluidStack fluidStackWaste) {
+        this.fluidStackWaste = fluidStackWaste;
+    }
+
     public FluidStack getFluidStack() {
         return fluidStack;
+    }
+
+    public FluidStack getFluidStackWaste() {
+        return fluidStackWaste;
     }
 
     public RadioactiveGeneratorBlockEntity getBlockEntity() {

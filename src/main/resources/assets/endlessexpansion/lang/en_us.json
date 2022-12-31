@@ -1,17 +1,22 @@
 {
   "item.endlessexpansion.uranium_ingot": "\u00A7aUranium Ingot",
   "item.endlessexpansion.raw_uranium": "Raw Uranium",
+  "item.endlessexpansion.plutonium_ingot": "\u00A75Plutonium Ingot",
+  "item.endlessexpansion.raw_plutonium": "Raw Plutonium",
   "item.endlessexpansion.nuclear_waste_bucket": "Nuclear Waste Bucket",
 
   "block.endlessexpansion.uranium_block": "\u00A7aUranium Block",
   "block.endlessexpansion.uranium_ore": "Uranium Ore",
   "block.endlessexpansion.deepslate_uranium_ore": "Deepslate Uranium Ore",
   "block.endlessexpansion.radioactive_generator": "\u00A7dRadioactive Generator",
+  "block.endlessexpansion.plutonium_block": "\u00A75Plutonium Block",
+  "block.endlessexpansion.deepslate_plutonium_ore": "Deepslate Plutonium Ore",
 
   "fluid_type.endlessexpansion.nuclear_waste_fluid": "Nuclear Waste",
 
   "itemGroup.modtab_physics": "Endless Expansion Physics",
 
   "endlessexpansion.tooltip.liquid.amount.with.capacity": "%s / %s mB",
-  "endlessexpansion.tooltip.liquid.amount": "%s mB"
+  "endlessexpansion.tooltip.liquid.amount": "%s mB",
+  "endlessexpansion.tooltip.liquid.empty": "Empty"
 }

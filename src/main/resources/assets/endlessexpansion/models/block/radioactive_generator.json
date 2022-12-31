@@ -1,8 +1,13 @@
 {
-	"parent":  "minecraft:block/cube_column",
+	"parent":  "minecraft:block/cube",
 	"textures": 
 	{
-		"end": "endlessexpansion:block/radioactive_generator_end",
-		"side": "endlessexpansion:block/radioactive_generator_side"
+		"down": "endlessexpansion:block/radioactive_generator_down",
+		"up": "endlessexpansion:block/radioactive_generator_up",
+		"north": "endlessexpansion:block/radioactive_generator_north",
+		"east": "endlessexpansion:block/radioactive_generator_east",
+		"south": "endlessexpansion:block/radioactive_generator_south",
+		"west": "endlessexpansion:block/radioactive_generator_west",
+		"particle": "endlessexpansion:block/radioactive_generator_south"
 	}
 }

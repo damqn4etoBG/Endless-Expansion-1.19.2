@@ -2,6 +2,8 @@ package net.damqn4etobg.endlessexpansion.block.custom;
 
 import net.damqn4etobg.endlessexpansion.block.entity.ModBlockEntities;
 import net.damqn4etobg.endlessexpansion.block.entity.RadioactiveGeneratorBlockEntity;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -27,6 +29,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.property.Properties;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -43,15 +46,13 @@ public class RadioactiveGeneratorBlock extends BaseEntityBlock {
         return this.defaultBlockState().setValue(FACING, pContext.getHorizontalDirection().getOpposite());
     }
 
-
-
     @Override
-    public BlockState rotate(BlockState pState, Rotation pRotation) {
+    public @NotNull BlockState rotate(BlockState pState, Rotation pRotation) {
         return pState.setValue(FACING, pRotation.rotate(pState.getValue(FACING)));
     }
 
     @Override
-    public BlockState mirror(BlockState pState, Mirror pMirror) {
+    public @NotNull BlockState mirror(BlockState pState, Mirror pMirror) {
         return pState.rotate(pMirror.getRotation(pState.getValue(FACING)));
     }
 
@@ -92,6 +93,16 @@ public class RadioactiveGeneratorBlock extends BaseEntityBlock {
         }
 
         return InteractionResult.sidedSuccess(pLevel.isClientSide());
+    }
+
+    @Override
+    public void appendHoverText(ItemStack itemStack, @Nullable BlockGetter blockGetter, List<Component> components, TooltipFlag flag) {
+        if(Screen.hasShiftDown()) {
+            components.add(Component.literal("Generates Energy from Radioactive Materials").withStyle(ChatFormatting.AQUA));
+        } else {
+            components.add(Component.literal("Press SHIFT for more info!").withStyle(ChatFormatting.YELLOW));
+        }
+        super.appendHoverText(itemStack, blockGetter, components, flag);
     }
 
     @Nullable

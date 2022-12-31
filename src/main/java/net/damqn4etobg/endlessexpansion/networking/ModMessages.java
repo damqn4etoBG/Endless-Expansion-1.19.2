@@ -3,6 +3,7 @@ package net.damqn4etobg.endlessexpansion.networking;
 import net.damqn4etobg.endlessexpansion.EndlessExpansion;
 import net.damqn4etobg.endlessexpansion.networking.packet.EnergySyncS2CPacket;
 import net.damqn4etobg.endlessexpansion.networking.packet.FluidSyncS2CPacket;
+import net.damqn4etobg.endlessexpansion.networking.packet.FluidWasteSyncS2CPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkDirection;
@@ -38,6 +39,12 @@ public class ModMessages {
                 .decoder(FluidSyncS2CPacket::new)
                 .encoder(FluidSyncS2CPacket::toBytes)
                 .consumerMainThread(FluidSyncS2CPacket::handle)
+                .add();
+
+        net.messageBuilder(FluidWasteSyncS2CPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(FluidWasteSyncS2CPacket::new)
+                .encoder(FluidWasteSyncS2CPacket::toBytes)
+                .consumerMainThread(FluidWasteSyncS2CPacket::handle)
                 .add();
     }
 

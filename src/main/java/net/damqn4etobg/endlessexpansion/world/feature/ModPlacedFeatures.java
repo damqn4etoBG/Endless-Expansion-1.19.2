@@ -19,6 +19,11 @@ public class ModPlacedFeatures {
                     commonOrePlacement(7, // VeinsPerChunk
                             HeightRangePlacement.triangle(VerticalAnchor.aboveBottom(-80), VerticalAnchor.aboveBottom(80)))));
 
+    public static final RegistryObject<PlacedFeature> PLUTONIUM_ORE_PLACED = PLACED_FEATURES.register("plutonium_ore_placed",
+            () -> new PlacedFeature(ModConfiguredFeatures.PLUTONIUM_ORE.getHolder().get(),
+                    commonOrePlacement(5, // VeinsPerChunk
+                            HeightRangePlacement.triangle(VerticalAnchor.aboveBottom(-80), VerticalAnchor.aboveBottom(30)))));
+
     public static List<PlacementModifier> orePlacement(PlacementModifier p_195347_, PlacementModifier p_195348_) {
         return List.of(p_195347_, InSquarePlacement.spread(), p_195348_, BiomeFilter.biome());
     }
