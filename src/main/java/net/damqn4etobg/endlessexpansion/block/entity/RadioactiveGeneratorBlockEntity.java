@@ -38,7 +38,10 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.fluids.capability.wrappers.FluidBlockWrapper;
+import net.minecraftforge.fluids.capability.wrappers.FluidBucketWrapper;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
@@ -60,6 +63,7 @@ public class RadioactiveGeneratorBlockEntity extends BlockEntity implements Menu
 
         @Override
         public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+            //Checks to see if you can put an item in a slot
             List<Item> validIngotsAndBlocks = Arrays.asList(ModItems.URANIUM_INGOT.get(), ModItems.PLUTONIUM_INGOT.get(),
                     ModBlocks.URANIUM_BLOCK.get().asItem(), ModBlocks.PLUTONIUM_BLOCK.get().asItem());
 
@@ -71,7 +75,7 @@ public class RadioactiveGeneratorBlockEntity extends BlockEntity implements Menu
         }
     };
 
-    private final ModEnergyStorage ENERGY_STORAGE = new ModEnergyStorage(10000000, 10000000) {
+    private final ModEnergyStorage ENERGY_STORAGE = new ModEnergyStorage(100000000, 100000000) {
         @Override
         public void onEnergyChanged() {
             setChanged();
@@ -79,7 +83,7 @@ public class RadioactiveGeneratorBlockEntity extends BlockEntity implements Menu
         }
     };
 
-    private final Temperature temperature = new Temperature(0, 1000) {
+    private Temperature temperature = new Temperature(0, 1000) {
         @Override
         public void onTemperatureChanged() {
             setChanged();
@@ -90,7 +94,7 @@ public class RadioactiveGeneratorBlockEntity extends BlockEntity implements Menu
 
     public static final int ENERGY_REQ = 1;
 
-    private final FluidTank FLUID_TANK = new FluidTank(128000) {
+    private final FluidTank FLUID_TANK = new FluidTank(256000) {
         @Override
         protected void onContentsChanged() {
             setChanged();
@@ -105,12 +109,12 @@ public class RadioactiveGeneratorBlockEntity extends BlockEntity implements Menu
         }
     };
 
-    private final FluidTank FLUID_TANK_WASTE = new FluidTank(128000) {
+    private final FluidTank FLUID_TANK_WASTE = new FluidTank(256000) {
         @Override
         protected void onContentsChanged() {
             setChanged();
 
-            if (getFluidAmount() >= 128000) {
+            if (getFluidAmount() >= getCapacity()) {
                 explode();
             }
 
@@ -147,7 +151,6 @@ public class RadioactiveGeneratorBlockEntity extends BlockEntity implements Menu
     public FluidStack getFluidStackWaste() {
         return this.FLUID_TANK_WASTE.getFluid();
     }
-
 
     private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
     private LazyOptional<IEnergyStorage> lazyEnergyHandler = LazyOptional.empty();
@@ -225,11 +228,15 @@ public class RadioactiveGeneratorBlockEntity extends BlockEntity implements Menu
         }
 
         if(cap == ForgeCapabilities.FLUID_HANDLER) {
-            return lazyFluidHandler.cast();
+            if (side == Direction.WEST) {
+                return lazyFluidHandler.cast();
+            }
         }
 
         if(cap == ForgeCapabilities.FLUID_HANDLER) {
-            return lazyFluidWasteHandler.cast();
+            if(side == Direction.EAST) {
+                return lazyFluidWasteHandler.cast();
+            }
         }
 
         if(cap == Temperature.TEMPERATURE) {
@@ -408,24 +415,24 @@ public class RadioactiveGeneratorBlockEntity extends BlockEntity implements Menu
         Optional<RadioactiveGeneratorRecipe> recipe = level.getRecipeManager()
                 .getRecipeFor(RadioactiveGeneratorRecipe.Type.INSTANCE, inventory, level);
 
-        if (entity.ENERGY_STORAGE.getEnergyStored() < 10000000) {
-            if (entity.FLUID_TANK.getFluidAmount() >= 1024 && entity.FLUID_TANK.getFluid().getFluid() == Fluids.WATER) {
+        if (entity.ENERGY_STORAGE.getEnergyStored() < 100000000) {
+            if (entity.FLUID_TANK.getFluidAmount() >= 256 && entity.FLUID_TANK.getFluid().getFluid() == Fluids.WATER) {
                     if (hasUraniumInSlot(entity)) {
-                        FluidStack wasteFluid = new FluidStack(ModFluids.SOURCE_NUCLEAR_WASTE.get(), 256);
+                        FluidStack wasteFluid = new FluidStack(ModFluids.SOURCE_NUCLEAR_WASTE.get(), 128);
                         try {
                             Thread.sleep(50); // delay for 1 second (1000 milliseconds)
                         } catch (InterruptedException e) {
                             // handle exception
                         }
-                        entity.ENERGY_STORAGE.receiveEnergy(4096, false);
-                        entity.FLUID_TANK.drain(1024, IFluidHandler.FluidAction.EXECUTE);
+                        entity.ENERGY_STORAGE.receiveEnergy(16384, false);
+                        entity.FLUID_TANK.drain(256, IFluidHandler.FluidAction.EXECUTE);
                         entity.FLUID_TANK_WASTE.fill(wasteFluid, IFluidHandler.FluidAction.EXECUTE);
                         entity.itemHandler.extractItem(0, 1, false);
                         entity.temperature.addTemperature(50);
                     }
                 }
 
-            if (entity.FLUID_TANK.getFluidAmount() >= 9216 && entity.FLUID_TANK.getFluid().getFluid() == Fluids.WATER) {
+            if (entity.FLUID_TANK.getFluidAmount() >= 2304 && entity.FLUID_TANK.getFluid().getFluid() == Fluids.WATER) {
                 if (hasUraniumBlockInSlot(entity)) {
                     FluidStack wasteFluid = new FluidStack(ModFluids.SOURCE_NUCLEAR_WASTE.get(), 512);
                     try {
@@ -433,8 +440,8 @@ public class RadioactiveGeneratorBlockEntity extends BlockEntity implements Menu
                     } catch (InterruptedException e) {
 
                     }
-                    entity.ENERGY_STORAGE.receiveEnergy(36864, false);
-                    entity.FLUID_TANK.drain(9216, IFluidHandler.FluidAction.EXECUTE);
+                    entity.ENERGY_STORAGE.receiveEnergy(147456, false);
+                    entity.FLUID_TANK.drain(2304, IFluidHandler.FluidAction.EXECUTE);
                     entity.FLUID_TANK_WASTE.fill(wasteFluid, IFluidHandler.FluidAction.EXECUTE);
                     entity.itemHandler.extractItem(0, 1, false);
                     entity.temperature.addTemperature(100);
@@ -449,7 +456,7 @@ public class RadioactiveGeneratorBlockEntity extends BlockEntity implements Menu
                     } catch (InterruptedException e) {
                         // handle exception
                     }
-                    entity.ENERGY_STORAGE.receiveEnergy(16384, false);
+                    entity.ENERGY_STORAGE.receiveEnergy(65536, false);
                     entity.FLUID_TANK.drain(3072, IFluidHandler.FluidAction.EXECUTE);
                     entity.FLUID_TANK_WASTE.fill(wasteFluid, IFluidHandler.FluidAction.EXECUTE);
                     entity.itemHandler.extractItem(0, 1, false);
@@ -457,7 +464,7 @@ public class RadioactiveGeneratorBlockEntity extends BlockEntity implements Menu
                 }
             }
 
-            if (entity.FLUID_TANK.getFluidAmount() >= 27378 && entity.FLUID_TANK.getFluid().getFluid() == Fluids.WATER) {
+            if (entity.FLUID_TANK.getFluidAmount() >= 6144 && entity.FLUID_TANK.getFluid().getFluid() == Fluids.WATER) {
                 if (hasPlutoniumBlockInSlot(entity)) {
                     FluidStack wasteFluid = new FluidStack(ModFluids.SOURCE_NUCLEAR_WASTE.get(), 2048);
                     try {
@@ -465,8 +472,8 @@ public class RadioactiveGeneratorBlockEntity extends BlockEntity implements Menu
                     } catch (InterruptedException e) {
 
                     }
-                    entity.ENERGY_STORAGE.receiveEnergy(110592, false);
-                    entity.FLUID_TANK.drain(27378, IFluidHandler.FluidAction.EXECUTE);
+                    entity.ENERGY_STORAGE.receiveEnergy(442368, false);
+                    entity.FLUID_TANK.drain(6144, IFluidHandler.FluidAction.EXECUTE);
                     entity.FLUID_TANK_WASTE.fill(wasteFluid, IFluidHandler.FluidAction.EXECUTE);
                     entity.itemHandler.extractItem(0, 1, false);
                     entity.temperature.addTemperature(100);

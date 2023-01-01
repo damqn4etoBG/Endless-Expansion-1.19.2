@@ -9,7 +9,7 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 public class TemperatureInfoArea extends InfoArea {
-    private final Temperature temperature;
+    private Temperature temperature;
 
     public TemperatureInfoArea(int xMin, int yMin) {
         this(xMin, yMin, null, 4, 54);

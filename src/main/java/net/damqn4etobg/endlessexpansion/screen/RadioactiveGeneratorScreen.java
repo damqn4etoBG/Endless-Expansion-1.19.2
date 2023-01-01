@@ -38,11 +38,11 @@ public class RadioactiveGeneratorScreen extends AbstractContainerScreen<Radioact
     }
 
     private void assignFluidRenderer() {
-        renderer = new FluidTankRenderer(128000, true, 16, 54);
+        renderer = new FluidTankRenderer(256000, true, 16, 54);
     }
 
     private void assignFluidWasteRenderer() {
-        wasteRenderer = new FluidTankRenderer(128000, true, 4, 54);
+        wasteRenderer = new FluidTankRenderer(256000, true, 4, 54);
     }
 
     private void assignEnergyInfoArea() {
