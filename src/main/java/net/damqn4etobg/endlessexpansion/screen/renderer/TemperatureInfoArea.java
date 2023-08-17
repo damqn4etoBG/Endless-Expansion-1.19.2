@@ -1,6 +1,7 @@
 package net.damqn4etobg.endlessexpansion.screen.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.damqn4etobg.endlessexpansion.util.ITemperature;
 import net.damqn4etobg.endlessexpansion.util.Temperature;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
@@ -9,17 +10,17 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 public class TemperatureInfoArea extends InfoArea {
-    private Temperature temperature;
+    private ITemperature temperature;
 
     public TemperatureInfoArea(int xMin, int yMin) {
         this(xMin, yMin, null, 4, 54);
     }
 
-    public TemperatureInfoArea(int xMin, int yMin, Temperature temperature) {
+    public TemperatureInfoArea(int xMin, int yMin, ITemperature temperature) {
         this(xMin, yMin, temperature, 4, 54);
     }
 
-    public TemperatureInfoArea(int xMin, int yMin, Temperature temperature, int width, int height) {
+    public TemperatureInfoArea(int xMin, int yMin, ITemperature temperature, int width, int height) {
         super(new Rect2i(xMin, yMin, width, height));
         this.temperature = temperature;
     }
@@ -33,7 +34,7 @@ public class TemperatureInfoArea extends InfoArea {
     @Override
     public void draw(PoseStack transform) {
         final int height = area.getHeight();
-        int stored = (int) (height * (temperature.getTemperature() / temperature.getMaxTemperature()));
+        int stored = (int) (height * (temperature.getTemperature() / (float) temperature.getMaxTemperature()));
         fillGradient(
                 transform,
                 area.getX(), area.getY()+(height-stored),

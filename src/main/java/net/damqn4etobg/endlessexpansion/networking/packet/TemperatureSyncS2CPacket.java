@@ -32,11 +32,11 @@ public class TemperatureSyncS2CPacket {
         NetworkEvent.Context context = supplier.get();
         context.enqueueWork(() -> {
             if(Minecraft.getInstance().level.getBlockEntity(pos) instanceof RadioactiveGeneratorBlockEntity blockEntity) {
-                blockEntity.setTemperatureLevel(temperature);
+                blockEntity.setTemperature(temperature);
 
                 if(Minecraft.getInstance().player.containerMenu instanceof RadioactiveGeneratorMenu menu &&
                         menu.getBlockEntity().getBlockPos().equals(pos)) {
-                    blockEntity.setTemperatureLevel(temperature);
+                    blockEntity.setTemperature(temperature);
                 }
             }
         });

@@ -1,41 +1,87 @@
 package net.damqn4etobg.endlessexpansion.util;
 
-import net.minecraftforge.common.capabilities.Capability;
+import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.Tag;
+import net.minecraftforge.common.util.INBTSerializable;
 
-public abstract class Temperature {
-    public static final Capability<Temperature> TEMPERATURE = null;
-    private float temperature;
-    private float maxTemperature;
+public class Temperature implements ITemperature, INBTSerializable<Tag> {
+    protected int temperature;
+    protected int capacity;
+    protected int maxReceive;
+    protected int maxExtract;
 
-    public Temperature(float temperature, float maxTemperature) {
-        this.temperature = temperature;
-        this.maxTemperature = maxTemperature;
+    public Temperature(int capacity) {
+        this(capacity, capacity, capacity, 0);
     }
 
-    public float getTemperature() {
+    public Temperature(int capacity, int maxTransfer) {
+        this(capacity, maxTransfer, maxTransfer, 0);
+    }
+
+    public Temperature(int capacity, int maxReceive, int maxExtract)
+    {
+        this(capacity, maxReceive, maxExtract, 0);
+    }
+
+    public Temperature(int capacity, int maxReceive, int maxExtract, int energy)
+    {
+        this.capacity = capacity;
+        this.maxReceive = maxReceive;
+        this.maxExtract = maxExtract;
+        this.temperature = Math.max(0 , Math.min(capacity, energy));
+    }
+
+    @Override
+    public int receiveTemperature(int maxReceive, boolean simulate) {
+        if (!canReceive())
+            return 0;
+
+        int temperatureRecieved = Math.min(capacity - temperature, Math.min(this.maxReceive, maxReceive));
+        if (!simulate)
+            temperature += temperatureRecieved;
+        return temperatureRecieved;
+    }
+
+    @Override
+    public int extractTemperature(int maxExtract, boolean simulate) {
+        if (!canExtract())
+            return 0;
+
+        int temperatureExtracted = Math.min(temperature, Math.min(this.maxExtract, maxExtract));
+        if (!simulate)
+            temperature -= temperatureExtracted;
+        return temperatureExtracted;
+    }
+
+    @Override
+    public int getTemperature() {
         return temperature;
     }
 
-    public void setTemperature(float temperature) {
-        this.temperature = temperature;
+    @Override
+    public int getMaxTemperature() {
+        return capacity;
     }
 
-    public void addTemperature(float tempToAdd) {
-        this.temperature += tempToAdd;
+    @Override
+    public boolean canExtract() {
+        return this.maxExtract > 0;
     }
 
-    public void removeTemperature(float tempToRemove) {
-        this.temperature -= tempToRemove;
+    @Override
+    public boolean canReceive() {
+        return this.maxReceive > 0;
     }
 
-    public float getMaxTemperature() {
-        return maxTemperature;
+    @Override
+    public Tag serializeNBT() {
+        return IntTag.valueOf(this.getTemperature());
     }
 
-    public void setMaxTemperature(float maxTemperature) {
-        this.maxTemperature = maxTemperature;
+    @Override
+    public void deserializeNBT(Tag nbt) {
+        if (!(nbt instanceof IntTag intNbt))
+            throw new IllegalArgumentException("Can not deserialize to an instance that isn't the default implementation");
+        this.temperature = intNbt.getAsInt();
     }
-
-    public abstract void onTemperatureChanged();
 }
-

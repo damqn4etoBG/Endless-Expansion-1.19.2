@@ -18,5 +18,7 @@
 
   "endlessexpansion.tooltip.liquid.amount.with.capacity": "%s / %s mB",
   "endlessexpansion.tooltip.liquid.amount": "%s mB",
-  "endlessexpansion.tooltip.liquid.empty": "Empty"
+  "endlessexpansion.tooltip.liquid.empty": "Empty",
+
+  "endlessexpansion.displayname.radioactive_generator": "Radioactive Generator"
 }

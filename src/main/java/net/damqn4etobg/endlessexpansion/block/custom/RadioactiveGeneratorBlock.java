@@ -5,8 +5,10 @@ import net.damqn4etobg.endlessexpansion.block.entity.RadioactiveGeneratorBlockEn
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -59,6 +61,24 @@ public class RadioactiveGeneratorBlock extends BaseEntityBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(FACING);
+    }
+
+    @Override
+    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource source) {
+        BlockEntity entity = level.getBlockEntity(pos);
+        if(entity instanceof RadioactiveGeneratorBlockEntity) {
+            RadioactiveGeneratorBlockEntity blockEntity = (RadioactiveGeneratorBlockEntity) entity;
+            if (RadioactiveGeneratorBlockEntity.hasUraniumInSlot(blockEntity)
+                    || RadioactiveGeneratorBlockEntity.hasUraniumBlockInSlot(blockEntity)
+                    || RadioactiveGeneratorBlockEntity.hasPlutoniumInSlot(blockEntity)
+                    || RadioactiveGeneratorBlockEntity.hasPlutoniumBlockInSlot(blockEntity)) {
+                level.addParticle(ParticleTypes.SMOKE, pos.getX() + source.nextDouble(), pos.getY(), pos.getZ() + source.nextDouble(), 0d, 0.05d, 0d);
+                level.addParticle(ParticleTypes.SMOKE, pos.getX() + source.nextDouble(), pos.getY(), pos.getZ() + source.nextDouble(), 0d, 0.05d, 0d);
+                level.addParticle(ParticleTypes.SMOKE, pos.getX() + source.nextDouble(), pos.getY(), pos.getZ() + source.nextDouble(), 0d, 0.05d, 0d);
+                level.addParticle(ParticleTypes.FLAME, pos.getX() + source.nextDouble(), pos.getY(), pos.getZ() + source.nextDouble(), 0d, 0.05d, 0d);
+            }
+        }
+        super.animateTick(state, level, pos, source);
     }
 
     // Block Entity

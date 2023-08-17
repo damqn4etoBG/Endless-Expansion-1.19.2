@@ -4,6 +4,7 @@ import net.damqn4etobg.endlessexpansion.EndlessExpansion;
 import net.damqn4etobg.endlessexpansion.networking.packet.EnergySyncS2CPacket;
 import net.damqn4etobg.endlessexpansion.networking.packet.FluidSyncS2CPacket;
 import net.damqn4etobg.endlessexpansion.networking.packet.FluidWasteSyncS2CPacket;
+import net.damqn4etobg.endlessexpansion.networking.packet.TemperatureSyncS2CPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkDirection;
@@ -45,6 +46,12 @@ public class ModMessages {
                 .decoder(FluidWasteSyncS2CPacket::new)
                 .encoder(FluidWasteSyncS2CPacket::toBytes)
                 .consumerMainThread(FluidWasteSyncS2CPacket::handle)
+                .add();
+
+        net.messageBuilder(TemperatureSyncS2CPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(TemperatureSyncS2CPacket::new)
+                .encoder(TemperatureSyncS2CPacket::toBytes)
+                .consumerMainThread(TemperatureSyncS2CPacket::handle)
                 .add();
     }
 

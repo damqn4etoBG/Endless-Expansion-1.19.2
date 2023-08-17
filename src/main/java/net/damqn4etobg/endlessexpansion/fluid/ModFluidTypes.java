@@ -20,12 +20,12 @@ public class ModFluidTypes {
             DeferredRegister.create(ForgeRegistries.Keys.FLUID_TYPES, EndlessExpansion.MOD_ID);
 
     public static final RegistryObject<FluidType> NUCLEAR_WASTE_FLUID_TYPE = register("nuclear_waste_fluid",
-            FluidType.Properties.create().lightLevel(2).density(15).viscosity(5).sound(SoundAction.get("drink"),
+            FluidType.Properties.create().lightLevel(2).density(30).viscosity(10).sound(SoundAction.get("drink"),
                     SoundEvents.HONEY_DRINK));
 
     private static RegistryObject<FluidType> register(String name, FluidType.Properties properties) {
         return FLUID_TYPES.register(name, () -> new BaseFluidType(WATER_STILL_RL, WATER_FLOWING_RL, NUCLEAR_WASTE_OVERLAY_RL,
-                0xA1F0B00E, new Vector3f(224f / 255f, 56f / 255f, 208f / 255f), properties));
+                0xD6FA550E, new Vector3f(224f / 255f, 56f / 255f, 208f / 255f), properties));
     }
 
     public static void register(IEventBus eventBus) {

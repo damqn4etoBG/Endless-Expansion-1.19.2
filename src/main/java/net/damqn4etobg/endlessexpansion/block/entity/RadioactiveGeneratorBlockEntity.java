@@ -10,8 +10,7 @@ import net.damqn4etobg.endlessexpansion.networking.packet.FluidWasteSyncS2CPacke
 import net.damqn4etobg.endlessexpansion.networking.packet.TemperatureSyncS2CPacket;
 import net.damqn4etobg.endlessexpansion.recipe.RadioactiveGeneratorRecipe;
 import net.damqn4etobg.endlessexpansion.screen.RadioactiveGeneratorMenu;
-import net.damqn4etobg.endlessexpansion.util.Temperature;
-import net.damqn4etobg.endlessexpansion.util.ModEnergyStorage;
+import net.damqn4etobg.endlessexpansion.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -19,7 +18,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -38,19 +36,14 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.fluids.capability.wrappers.FluidBlockWrapper;
-import net.minecraftforge.fluids.capability.wrappers.FluidBucketWrapper;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @SuppressWarnings("ALL")
@@ -75,6 +68,8 @@ public class RadioactiveGeneratorBlockEntity extends BlockEntity implements Menu
         }
     };
 
+
+
     private final ModEnergyStorage ENERGY_STORAGE = new ModEnergyStorage(100000000, 100000000) {
         @Override
         public void onEnergyChanged() {
@@ -83,11 +78,11 @@ public class RadioactiveGeneratorBlockEntity extends BlockEntity implements Menu
         }
     };
 
-    private Temperature temperature = new Temperature(0, 1000) {
+    private final ModTemperature temperature = new ModTemperature(1500, 1000) {
         @Override
         public void onTemperatureChanged() {
             setChanged();
-            ModMessages.sendToClients(new TemperatureSyncS2CPacket((int) this.getTemperature(), getBlockPos()));
+            ModMessages.sendToClients(new TemperatureSyncS2CPacket(this.getTemperature(), getBlockPos()));
         }
     };
 
@@ -156,7 +151,7 @@ public class RadioactiveGeneratorBlockEntity extends BlockEntity implements Menu
     private LazyOptional<IEnergyStorage> lazyEnergyHandler = LazyOptional.empty();
     private LazyOptional<IFluidHandler> lazyFluidHandler = LazyOptional.empty();
     private LazyOptional<IFluidHandler> lazyFluidWasteHandler = LazyOptional.empty();
-    private LazyOptional<Temperature> lazyTemperatureHandler = LazyOptional.empty();
+    private LazyOptional<ITemperature> lazyTemperatureHandler = LazyOptional.empty();
 
     protected final ContainerData data;
     private int progress = 0;
@@ -192,7 +187,7 @@ public class RadioactiveGeneratorBlockEntity extends BlockEntity implements Menu
 
     @Override
     public Component getDisplayName() {
-        return Component.literal("Radioactive Generator");
+        return Component.translatable("endlessexpansion.displayname.radioactive_generator");
     }
 
     @Nullable
@@ -205,7 +200,7 @@ public class RadioactiveGeneratorBlockEntity extends BlockEntity implements Menu
         return ENERGY_STORAGE;
     }
 
-    public Temperature getTemperature() {
+    public ITemperature getTemperature() {
         return temperature;
     }
 
@@ -213,12 +208,13 @@ public class RadioactiveGeneratorBlockEntity extends BlockEntity implements Menu
         this.ENERGY_STORAGE.setEnergy(energy);
     }
 
-    public void setTemperatureLevel(int temperature) {
+    public void setTemperature(int temperature) {
         this.temperature.setTemperature(temperature);
     }
 
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+
         if(cap == ForgeCapabilities.ENERGY) {
             return lazyEnergyHandler.cast();
         }
@@ -228,7 +224,7 @@ public class RadioactiveGeneratorBlockEntity extends BlockEntity implements Menu
         }
 
         if(cap == ForgeCapabilities.FLUID_HANDLER) {
-            if (side == Direction.WEST) {
+            if(side == Direction.WEST) {
                 return lazyFluidHandler.cast();
             }
         }
@@ -239,7 +235,7 @@ public class RadioactiveGeneratorBlockEntity extends BlockEntity implements Menu
             }
         }
 
-        if(cap == Temperature.TEMPERATURE) {
+        if(cap == ModCapabilities.TEMPERATURE) {
             return lazyTemperatureHandler.cast();
         }
 
@@ -271,7 +267,7 @@ public class RadioactiveGeneratorBlockEntity extends BlockEntity implements Menu
         nbt.put("inventory", itemHandler.serializeNBT());
         nbt.putInt("radioactive_generator.progress", this.progress);
         nbt.putInt("radioactive_generator.energy", ENERGY_STORAGE.getEnergyStored());
-        nbt.putInt("radioactive_generator.temp", (int) temperature.getTemperature());
+        nbt.putInt("radioactive_generator.temp", temperature.getTemperature());
         nbt = FLUID_TANK.writeToNBT(nbt);
         nbt = FLUID_TANK_WASTE.writeToNBT(nbt);
 
@@ -304,7 +300,7 @@ public class RadioactiveGeneratorBlockEntity extends BlockEntity implements Menu
         }
 
 //        if(hasUraniumInSlot(pEntity)) {
-//
+ //           level.addParticle(ParticleTypes.SMOKE, pos.getX(), pos.getY(), pos.getZ(), 0d, 0d, 0d);
 //        }
 //
 //        if(hasUraniumBlockInSlot(pEntity)) {
@@ -369,11 +365,11 @@ public class RadioactiveGeneratorBlockEntity extends BlockEntity implements Menu
         return pEntity.ENERGY_STORAGE.getEnergyStored() >= ENERGY_REQ * pEntity.maxProgress;
     }
 
-    private static boolean hasUraniumInSlot(RadioactiveGeneratorBlockEntity pEntity) {
+    public static boolean hasUraniumInSlot(RadioactiveGeneratorBlockEntity pEntity) {
         return pEntity.itemHandler.getStackInSlot(0).getItem() == ModItems.URANIUM_INGOT.get();
     }
 
-    private static boolean hasUraniumBlockInSlot(RadioactiveGeneratorBlockEntity pEntity) {
+    public static boolean hasUraniumBlockInSlot(RadioactiveGeneratorBlockEntity pEntity) {
         return pEntity.itemHandler.getStackInSlot(0).getItem() == ModBlocks.URANIUM_BLOCK.get().asItem();
     }
 
@@ -381,11 +377,11 @@ public class RadioactiveGeneratorBlockEntity extends BlockEntity implements Menu
         return pEntity.itemHandler.getStackInSlot(1).getItem() == Items.WATER_BUCKET;
     }
 
-    private static boolean hasPlutoniumInSlot(RadioactiveGeneratorBlockEntity pEntity) {
+    public static boolean hasPlutoniumInSlot(RadioactiveGeneratorBlockEntity pEntity) {
         return pEntity.itemHandler.getStackInSlot(0).getItem() == ModItems.PLUTONIUM_INGOT.get();
     }
 
-    private static boolean hasPlutoniumBlockInSlot(RadioactiveGeneratorBlockEntity pEntity) {
+    public static boolean hasPlutoniumBlockInSlot(RadioactiveGeneratorBlockEntity pEntity) {
         return pEntity.itemHandler.getStackInSlot(0).getItem() == ModBlocks.PLUTONIUM_BLOCK.get().asItem();
     }
 
@@ -405,7 +401,7 @@ public class RadioactiveGeneratorBlockEntity extends BlockEntity implements Menu
         }
     }
 
-    private static boolean hasRecipe(RadioactiveGeneratorBlockEntity entity) {
+    public static boolean hasRecipe(RadioactiveGeneratorBlockEntity entity) {
         Level level = entity.level;
         SimpleContainer inventory = new SimpleContainer(entity.itemHandler.getSlots());
         for (int i = 0; i < entity.itemHandler.getSlots(); i++) {
@@ -428,7 +424,7 @@ public class RadioactiveGeneratorBlockEntity extends BlockEntity implements Menu
                         entity.FLUID_TANK.drain(256, IFluidHandler.FluidAction.EXECUTE);
                         entity.FLUID_TANK_WASTE.fill(wasteFluid, IFluidHandler.FluidAction.EXECUTE);
                         entity.itemHandler.extractItem(0, 1, false);
-                        entity.temperature.addTemperature(50);
+                        entity.temperature.receiveTemperature(50,false);
                     }
                 }
 
@@ -444,7 +440,7 @@ public class RadioactiveGeneratorBlockEntity extends BlockEntity implements Menu
                     entity.FLUID_TANK.drain(2304, IFluidHandler.FluidAction.EXECUTE);
                     entity.FLUID_TANK_WASTE.fill(wasteFluid, IFluidHandler.FluidAction.EXECUTE);
                     entity.itemHandler.extractItem(0, 1, false);
-                    entity.temperature.addTemperature(100);
+                    entity.temperature.receiveTemperature(100, false);
                 }
             }
 
@@ -460,7 +456,7 @@ public class RadioactiveGeneratorBlockEntity extends BlockEntity implements Menu
                     entity.FLUID_TANK.drain(3072, IFluidHandler.FluidAction.EXECUTE);
                     entity.FLUID_TANK_WASTE.fill(wasteFluid, IFluidHandler.FluidAction.EXECUTE);
                     entity.itemHandler.extractItem(0, 1, false);
-                    entity.temperature.addTemperature(100);
+                    entity.temperature.receiveTemperature(100, false);
                 }
             }
 
@@ -476,7 +472,7 @@ public class RadioactiveGeneratorBlockEntity extends BlockEntity implements Menu
                     entity.FLUID_TANK.drain(6144, IFluidHandler.FluidAction.EXECUTE);
                     entity.FLUID_TANK_WASTE.fill(wasteFluid, IFluidHandler.FluidAction.EXECUTE);
                     entity.itemHandler.extractItem(0, 1, false);
-                    entity.temperature.addTemperature(100);
+                    entity.temperature.receiveTemperature(100, false);
                 }
             }
         }
